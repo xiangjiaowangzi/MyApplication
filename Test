@@ -1,0 +1,95 @@
+# 一级标题
+## 二级标题
+### 三级标题
+#### 四级标题
+##### 五级标题
+######六级标题
+没有标题
+
+*斜体* **粗体** ***加粗斜体*** ~~删除线~~
+
+插入链接 [百度](www.baidu.com)
+
+我经常去的几个网站[Google][1]、[Leanote][2]以及[自己的博客][3]
+[Leanote 笔记][2]是一个不错的[网站][3]。
+
+[1]:http://www.google.com "Google"
+[2]:http://www.leanote.com "Leanote"
+[3]:http://http://blog.leanote.com/freewalk "梵居闹市"
+
+<http://example.com/>
+<2479458389@qq.com>
+
+## 0. 目录{#index}
+跳转到[目录](#index)
+
+- 无序列表项 一
+- 无序列表项 二
+- 无序列表项 三
+
+1. 有序列表项 一
+2. 有序列表项 二
+3. 有序列表项 三
+
+Markdown:
+轻量级文本标记语言，可以转换成html，pdf等格式（左侧有一个可见的冒号和四个不可见的空格）
+ 这是代码块的定义（左侧有一个可见的冒号和四个不可见的空格）
+
+         代码块（左侧有八个不可见的空格）
+
+``` javascript
+    @Override
+    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+        finish();
+    }
+```
+        private final Object mInstanceTracker =
+        StrictMode.trackActivity(this); // 所以这里会有问题的
+
+
+- 阅读的方法:
+    > 打开书本。
+
+    > 打开电灯。
+
+    >>>>无敌了
+
+分割线
+***
+分隔线结束
+
+1986. What a great season.
+1986\. What a great season.
+
+质能守恒方程可以用一个很简洁的方程式 $E=mc^2$ 来表达。
+$$\sum_{i=1}^n a_i=0$$
+$$f(x_1,x_x,\ldots,x_n) = x_1^2 + x_2^2 + \cdots + x_n^2 $$
+$$\sum^{j-1}_{k=0}{\widehat{\gamma}_{kj} z_k}$$
+
+flow
+st=>start: Start:>https://www.zybuluo.com
+io=>inputoutput: verification
+op=>operation: Your Operation
+cond=>condition: Yes or No?
+sub=>subroutine: Your Subroutine
+e=>end
+st->io->op->cond
+cond(yes)->e
+cond(no)->sub->io
+
+学号|姓名|分数
+-|-|-
+小明|男|75
+小红|女|79
+小陆|男|92
+
+
+
+
+
+
+
+
+
+

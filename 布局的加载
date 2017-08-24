@@ -1,0 +1,43 @@
+#布局加载
+我们平时所见较多的加载基本是使用一下方式有：<br>
+- setContentView(R.layout.activity_main); <br>
+- getLayoutInflater().inflate(R.layout.activity_main , root);<br>
+- setContentView(R.layout.activity_main); activity使用该方法加载布局
+
+### setContentView
+跟进方法可以发现Activity中的调用是
+
+    public void setContentView(@LayoutRes int layoutResID) {
+            getWindow().setContentView(layoutResID);
+            initWindowDecorActionBar();
+        }
+
+主要调用了getWindow()，Activity对应的Window是PhoneWindow
+
+        @Override
+            public void setContentView(int layoutResID) {
+                ...
+                if (mContentParent == null) {
+                    installDecor(); // 生成decorview
+                } else if (!hasFeature(FEATURE_CONTENT_TRANSITIONS)) {
+                    mContentParent.removeAllViews();
+                }
+                ...
+                // 主要是调用了
+                    mLayoutInflater.inflate(layoutResID, mContentParent);
+                }
+                ...
+            }
+
+
+
+事发地点
+
+        // 第一个参数 context 上下文
+        // 第二个参数 resource 资源布局
+        // 第三个参数 root    根布局
+        public static View inflate(Context context, @LayoutRes int resource, ViewGroup root) {
+            LayoutInflater factory = LayoutInflater.from(context);
+            return factory.inflate(resource, root);
+        }
+

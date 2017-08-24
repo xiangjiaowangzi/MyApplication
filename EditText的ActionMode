@@ -1,0 +1,192 @@
+# EdiText如何生成ActionMode
+
+## Textview的onTouchEvent
+EditText继承TextView，查看TextView的TouchEvent
+
+     if (mEditor != null) {
+            mEditor.onTouchEvent(event);
+
+            if (mEditor.mSelectionModifierCursorController != null &&
+                    mEditor.mSelectionModifierCursorController.isDragAcceleratorActive()) {
+                return true;
+            }
+        }
+
+- mEditor.onTouchEvent(event);
+如果mEditor不为空，调用mEditor中的onTouchEvent(event)
+
+        void onTouchEvent(MotionEvent event) {
+                final boolean filterOutEvent = shouldFilterOutTouchEvent(event);
+                mLastButtonState = event.getButtonState();
+                if (filterOutEvent) {
+                    if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                        mDiscardNextActionUp = true;
+                    }
+                    return;
+                }
+                // 更新对应的mTapState状态和
+                // 触摸的最后时间mLastTouchUpTime
+                //
+                updateTapState(event);
+
+                updateFloatingToolbarVisibility(event);
+
+                if (hasSelectionController()) {
+                    getSelectionController().onTouchEvent(event);
+                }
+
+                if (mShowSuggestionRunnable != null) {
+                    mTextView.removeCallbacks(mShowSuggestionRunnable);
+                    mShowSuggestionRunnable = null;
+                }
+
+                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                    mLastDownPositionX = event.getX();
+                    mLastDownPositionY = event.getY();
+
+                    // Reset this state; it will be re-set if super.onTouchEvent
+                    // causes focus to move to the view.
+                    mTouchFocusSelected = false;
+                    mIgnoreActionUpEvent = false;
+                }
+            }
+
+- updateFloatingToolbarVisibility<br>
+   mTextActionMode 如果不为空，执行以下方法<br>
+   mTextActionMode 是什么？
+
+        if (mTextActionMode != null) {
+                    switch (event.getActionMasked()) {
+                        case MotionEvent.ACTION_MOVE:
+                            hideFloatingToolbar();
+                            break;
+                        case MotionEvent.ACTION_UP:  // fall through
+                        case MotionEvent.ACTION_CANCEL:
+                            showFloatingToolbar();
+                    }
+                }
+
+## mTextActionMode<br>
+在startInsertionActionMode（）方法中生成 <br>
+调用了mTextActionMode = mTextView.startActionMode(
+                           actionModeCallback, ActionMode.TYPE_FLOATING);
+
+        void startInsertionActionMode() {
+                if (mInsertionActionModeRunnable != null) {
+                    mTextView.removeCallbacks(mInsertionActionModeRunnable);
+                }
+                if (extractedTextModeWillBeStarted()) {
+                    return;
+                }
+                stopTextActionMode();
+
+                ActionMode.Callback actionModeCallback =
+                        new TextActionModeCallback(false /* hasSelection */);
+                mTextActionMode = mTextView.startActionMode(
+                        actionModeCallback, ActionMode.TYPE_FLOATING);
+                if (mTextActionMode != null && getInsertionController() != null) {
+                    getInsertionController().show();
+                }
+            }
+
+- View的startActionMode方法
+- 调用了getParent()中的startActionModeForChild（）
+
+        public ActionMode startActionMode(ActionMode.Callback callback, int type) {
+                ViewParent parent = getParent();
+                if (parent == null) return null;
+                try {
+                    return parent.startActionModeForChild(this, callback, type);
+                } catch (AbstractMethodError ame) {
+                    // Older implementations of custom views might not implement this.
+                    return parent.startActionModeForChild(this, callback);
+                }
+            }
+
+## ViewGroup的startActionModeForChild
+- mGroupFlags<br>
+  private static final int FLAG_START_ACTION_MODE_FOR_CHILD_IS_TYPED = 0x8000000;<br>
+  private static final int FLAG_START_ACTION_MODE_FOR_CHILD_IS_NOT_TYPED = 0x10000000;<br>
+  private static final int FLAG_SHOW_CONTEXT_MENU_WITH_COORDS = 0x20000000;<br>
+简单记忆下 is_type = 0x8000 IS_NOT_TYPED = 0x1000  CONTEXT_MENU = 0x2000<br>
+is_type 理解为默认给你有个type , is_not_tyoe 没有type ， 要设置
+
+- ActionMode<br>
+    public static final int TYPE_PRIMARY = 0;
+    public static final int TYPE_FLOATING = 1;
+
+### startActionModeForChild(View originalView, ActionMode.Callback callback)<br>
+总结：
+  - 如果mGroupFlags没有is_type 属性 则直接是调用了startActionModeForChild(
+                                    View originalView, ActionMode.Callback callback, int type)方法<br>
+然后就会调用了父类 mParent.startActionModeForChild(originalView, callback, type);<br>
+  - 如果如果mGroupFlags没有is_type 属性 直接返回 SENTINEL_ACTION_MODE
+
+
+
+                @Override
+                public ActionMode startActionModeForChild(View originalView, ActionMode.Callback callback) {
+                    if ((mGroupFlags & FLAG_START_ACTION_MODE_FOR_CHILD_IS_TYPED) == 0) {
+                        // This is the original call.
+                        try {
+                        //如果 flag 不是 is_type
+                         // flag 赋值 is_no_type
+                         // type = ActionMode.TYPE_PRIMARY
+                         // 调用下面方法
+                            mGroupFlags |= FLAG_START_ACTION_MODE_FOR_CHILD_IS_NOT_TYPED;
+                            return startActionModeForChild(originalView, callback, ActionMode.TYPE_PRIMARY);
+                        } finally {
+                        // 最后把 mGroupFlags 把状态 重置
+                            mGroupFlags &= ~FLAG_START_ACTION_MODE_FOR_CHILD_IS_NOT_TYPED;
+                        }
+                    } else {
+                        // We are being called from the new method with type.
+                        // 如果不是flag 不是 is_type ，返回 SENTINEL_ACTION_MODE
+                        return SENTINEL_ACTION_MODE;
+                    }
+                }
+
+### startActionModeForChild(
+   View originalView, ActionMode.Callback callback, int type)<br>
+ -总结：没有有is_not_type属性 而且type == ActionMode.TYPE_PRIMARY 走startActionModeForChild 方法 然后检查mode
+       否则，父类的startActionModeForChild
+
+
+         @Override
+            public ActionMode startActionModeForChild(
+                    View originalView, ActionMode.Callback callback, int type) {
+                if ((mGroupFlags & FLAG_START_ACTION_MODE_FOR_CHILD_IS_NOT_TYPED) == 0
+                        && type == ActionMode.TYPE_PRIMARY) { // 如果不是 no_typede 而且type == ActionMode.TYPE_PRIMARY
+                    ActionMode mode;
+                    try {
+                       // 调用上面方法
+                        mGroupFlags |= FLAG_START_ACTION_MODE_FOR_CHILD_IS_TYPED;
+                        mode = startActionModeForChild(originalView, callback);
+                    } finally {
+                       // 最后也是清空 mGroupFlags 标记
+                        mGroupFlags &= ~FLAG_START_ACTION_MODE_FOR_CHILD_IS_TYPED;
+                    }
+                    if (mode != SENTINEL_ACTION_MODE) {
+                        return mode;
+                    }
+                }
+                if (mParent != null) {
+                    try {
+                        return mParent.startActionModeForChild(originalView, callback, type);
+                    } catch (AbstractMethodError ame) {
+                        // Custom view parents might not implement this method.
+                        return mParent.startActionModeForChild(originalView, callback);
+                    }
+                }
+                return null;
+            }
+
+### SENTINEL_ACTION_MODE
+继承ActionMode的一个内部类
+
+## DecorView的startActionMode
+可以发现因为mTextView.startActionMode(actionModeCallback, ActionMode.TYPE_FLOATING);
+最终会一直往上调用父类方法
+最终到DecorView的startActionMode
+
+

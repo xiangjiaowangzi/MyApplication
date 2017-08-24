@@ -1,0 +1,49 @@
+# FrameLayout 源码分析
+- FrameLayout可以说是所有ViewGroup中的精髓<br>
+- DecorView继承与它，ScrollView继承与它等等...<br>
+- 本章将会从[onMeasure](#1) , [onLayout](#2) 主要分析
+
+## onMeasure
+### 初始化
+- measureMatchParentChildren 只要有高宽的Mode属性有一个不确定就为true
+- mMatchParentChildren 子view是否有MatchParent属性的集合
+
+              int count = getChildCount();
+
+                final boolean measureMatchParentChildren =
+                        MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.EXACTLY ||
+                        MeasureSpec.getMode(heightMeasureSpec) != MeasureSpec.EXACTLY;
+                mMatchParentChildren.clear();
+
+                int maxHeight = 0;
+                int maxWidth = 0;
+                int childState = 0;
+
+### 测量子view
+做简单的初始化后，开始进行遍历每个子view，给每个view进行测量，
+
+        for (int i = 0; i < count; i++) {
+                    final View child = getChildAt(i);
+                    if (mMeasureAllChildren || child.getVisibility() != GONE) {
+                        measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
+                        final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                        maxWidth = Math.max(maxWidth,
+                                child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin);
+                        maxHeight = Math.max(maxHeight,
+                                child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin);
+                        childState = combineMeasuredStates(childState, child.getMeasuredState());
+                        if (measureMatchParentChildren) {
+                            if (lp.width == LayoutParams.MATCH_PARENT ||
+                                    lp.height == LayoutParams.MATCH_PARENT) {
+                                mMatchParentChildren.add(child);
+                            }
+                        }
+                    }
+                }
+
+
+
+
+<h2 id="2">onLayout</h2>
+
+

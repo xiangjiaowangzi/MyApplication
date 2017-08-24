@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.administrator.myapplication.MainActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:textColor="@color/colorAccent"
+        android:textColorHighlight="@color/colorPrimary"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:textColorLink="@color/colorPrimary"
+        android:textSize="18sp"
+        android:typeface="sans"
+        android:fontFamily="casual"
+        android:textStyle="italic"
+        android:textAllCaps="true"
+        android:text="哈哈"
+        android:shadowColor="@color/colorPrimaryDark"
+        android:elegantTextHeight="true"
+        />
+
+    <!--
+    android:shadowDx="1dp"
+        android:shadowDy="1dp"
+        android:shadowRadius="3dp"
+                android:letterSpacing="2dp"
+
+    -->
+
+    <com.example.administrator.myapplication.view.MyEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="hi hello"
+        />
+
+</LinearLayout>
