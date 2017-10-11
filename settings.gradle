@@ -1,1 +1,1 @@
-include ':app', ':layoutmanager', ':app2'
+include ':app', ':RecyclerViewDemo', ':app2', ':activitydemo', ':threaddemo', ':encoderDemo'

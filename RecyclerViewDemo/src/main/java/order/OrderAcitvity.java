@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.test.drag.DragRecyclerViewAct;
+import com.test.drag.myDrag.MyDragAct;
 
 import org.loader.layoutmanager.MainActivity;
 import org.loader.layoutmanager.R;

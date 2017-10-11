@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.test.drag.myDrag.MyDragLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    >
+
+    <Button
+        android:id="@+id/btn1"
+        android:text="第一"
+        android:background="@color/colorAccent"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        />
+
+    <Button
+        android:id="@+id/btn2"
+        android:text="第二"
+        android:background="#ab33"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        />
+
+    <Button
+        android:id="@+id/btn3"
+        android:text="第三"
+        android:background="#e234"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        />
+
+    <Button
+        android:text="第四"
+        android:background="#8876"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        />
+
+    <Button
+        android:text="第五"
+        android:background="#ccf"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        />
+
+    <Button
+        android:text="第溜"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</com.test.drag.myDrag.MyDragLayout>
