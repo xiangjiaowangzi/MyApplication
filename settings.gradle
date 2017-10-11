@@ -1,1 +1,1 @@
-include ':app', ':RecyclerViewDemo', ':app2', ':activitydemo', ':threaddemo', ':encoderDemo'
+include ':app', ':RecyclerViewDemo', ':app2', ':activitydemo', ':threaddemo', ':encoderDemo', ':leakdemo'
